@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vue Manage System 互动课程</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* --- BACKGROUNDS --- */
+      --color-bg: #FAF7F2;
+      --color-bg-warm: #F5F0E8;
+      --color-bg-code: #1E1E2E;
+      --color-text: #2C2A28;
+      --color-text-secondary: #6B6560;
+      --color-text-muted: #9E9790;
+      --color-border: #E5DFD6;
+      --color-border-light: #EEEBE5;
+      --color-surface: #FFFFFF;
+      --color-surface-warm: #FDF9F3;
+
+      /* --- ACCENT --- */
+      --color-accent: #D94F30;
+      --color-accent-hover: #C4432A;
+      --color-accent-light: #FDEEE9;
+      --color-accent-muted: #E8836C;
+
+      /* --- SEMANTIC --- */
+      --color-success: #2D8B55;
+      --color-success-light: #E8F5EE;
+      --color-error: #C93B3B;
+      --color-error-light: #FDE8E8;
+      --color-info: #2A7B9B;
+      --color-info-light: #E4F2F7;
+
+      /* --- ACTOR COLORS --- */
+      --color-actor-1: #D94F30;
+      --color-actor-2: #2A7B9B;
+      --color-actor-3: #7B6DAA;
+      --color-actor-4: #D4A843;
+      --color-actor-5: #2D8B55;
+
+      /* --- TYPOGRAPHY --- */
+      --font-display: 'Bricolage Grotesque', Georgia, serif;
+      --font-body: 'DM Sans', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      --text-xs: 0.75rem;
+      --text-sm: 0.875rem;
+      --text-base: 1rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+      --text-3xl: 1.875rem;
+      --text-4xl: 2.25rem;
+      --text-5xl: 3rem;
+      --text-6xl: 3.75rem;
+      --leading-tight: 1.15;
+      --leading-snug: 1.3;
+      --leading-normal: 1.6;
+      --leading-loose: 1.8;
+
+      /* --- SPACING --- */
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      --space-12: 3rem;
+      --space-16: 4rem;
+      --space-20: 5rem;
+      --space-24: 6rem;
+
+      --content-width: 900px;
+      --content-width-wide: 1100px;
+      --nav-height: 60px;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+
+      /* --- SHADOWS --- */
+      --shadow-sm: 0 1px 2px rgba(44, 42, 40, 0.05);
+      --shadow-md: 0 4px 12px rgba(44, 42, 40, 0.08);
+      --shadow-lg: 0 8px 24px rgba(44, 42, 40, 0.1);
+      --shadow-xl: 0 16px 48px rgba(44, 42, 40, 0.12);
+
+      /* --- ANIMATION --- */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --duration-fast: 150ms;
+      --duration-normal: 300ms;
+      --duration-slow: 500ms;
+      --stagger-delay: 120ms;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      color: var(--color-text);
+      background: var(--color-bg);
+      background-image: radial-gradient(ellipse at 20% 50%, rgba(217, 79, 48, 0.03) 0%, transparent 50%);
+      scroll-behavior: smooth;
+    }
+    html { scroll-snap-type: y proximity; }
+
+    nav.nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-height);
+      display: flex;
+      align-items: center;
+      padding: 0 var(--space-6);
+      backdrop-filter: blur(10px);
+      background: rgba(250, 247, 242, 0.9);
+      border-bottom: 1px solid var(--color-border);
+      z-index: 999;
+    }
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      gap: var(--space-6);
+    }
+    .nav-title {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .nav-dots {
+      display: flex;
+      gap: var(--space-3);
+      align-items: center;
+    }
+    .nav-dot {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      border: 2px solid var(--color-text-muted);
+      background: transparent;
+      cursor: pointer;
+      padding: 0;
+      transition: all var(--duration-normal) var(--ease-out);
+    }
+    .nav-dot.current {
+      border-color: var(--color-accent);
+      background: var(--color-accent);
+      box-shadow: 0 0 0 4px rgba(217, 79, 48, 0.15);
+    }
+    .nav-dot.visited {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+    }
+    .progress-bar {
+      position: absolute;
+      left: 0; top: 0; height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--color-accent), var(--color-actor-2));
+      transition: width var(--duration-normal);
+    }
+
+    main { margin-top: var(--nav-height); }
+    .module {
+      min-height: 100dvh;
+      scroll-snap-align: start;
+      padding: calc(var(--nav-height) + var(--space-12)) var(--space-6) var(--space-16);
+      display: flex;
+      align-items: stretch;
+    }
+    .module-content {
+      max-width: var(--content-width);
+      width: 100%;
+      margin: 0 auto;
+    }
+    .module-header {
+      margin-bottom: var(--space-8);
+    }
+    .module-number {
+      font-size: var(--text-6xl);
+      font-family: var(--font-display);
+      color: rgba(217, 79, 48, 0.15);
+      font-weight: 800;
+      letter-spacing: 0.05em;
+    }
+    .module-title {
+      margin: var(--space-2) 0 var(--space-1);
+      font-size: var(--text-4xl);
+      font-family: var(--font-display);
+      line-height: var(--leading-tight);
+    }
+    .module-subtitle {
+      margin: 0;
+      color: var(--color-text-secondary);
+      font-size: var(--text-lg);
+      max-width: 640px;
+      line-height: var(--leading-normal);
+    }
+
+    .module-body { display: flex; flex-direction: column; gap: var(--space-8); }
+    .screen {
+      background: var(--color-surface);
+      padding: var(--space-8);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5);
+    }
+    .screen-heading {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      line-height: var(--leading-snug);
+    }
+    .lead {
+      margin: 0;
+      font-size: var(--text-base);
+      line-height: var(--leading-normal);
+      color: var(--color-text-secondary);
+    }
+
+    .animate-in { opacity: 0; transform: translateY(20px); transition: opacity var(--duration-slow) var(--ease-out), transform var(--duration-slow) var(--ease-out); }
+    .animate-in.visible { opacity: 1; transform: translateY(0); }
+    .stagger-children > .animate-in { transition-delay: calc(var(--stagger-index, 0) * var(--stagger-delay)); }
+
+    .translation-block {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      margin: var(--space-4) 0;
+    }
+    .translation-code {
+      background: var(--color-bg-code);
+      color: #CDD6F4;
+      padding: var(--space-6);
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      line-height: 1.7;
+      position: relative;
+      overflow-x: hidden;
+    }
+    .translation-code pre,
+    .translation-code code { white-space: pre-wrap; word-break: break-word; overflow-x: hidden; }
+    .translation-english {
+      background: var(--color-surface-warm);
+      padding: var(--space-6);
+      font-size: var(--text-sm);
+      line-height: 1.7;
+      border-left: 3px solid var(--color-accent);
+      position: relative;
+    }
+    .translation-label {
+      position: absolute;
+      top: var(--space-2);
+      right: var(--space-3);
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.5;
+    }
+    .translation-english .translation-label { color: var(--color-text-muted); }
+
+    .code-keyword { color: #CBA6F7; }
+    .code-string { color: #A6E3A1; }
+    .code-function { color: #89B4FA; }
+    .code-comment { color: #6C7086; }
+    .code-number { color: #FAB387; }
+    .code-property { color: #F9E2AF; }
+    .code-operator { color: #94E2D5; }
+    .code-tag { color: #F38BA8; }
+    .code-attr { color: #F9E2AF; }
+    .code-value { color: #A6E3A1; }
+
+    .step-cards { display: flex; flex-direction: column; gap: var(--space-3); }
+    .step-card {
+      display: flex;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-5);
+      background: var(--color-surface-warm);
+      border-radius: var(--radius-md);
+      border-left: 3px solid var(--color-accent);
+      box-shadow: var(--shadow-sm);
+    }
+    .step-num {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--color-accent);
+      color: #fff; font-weight: 700; display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); flex-shrink: 0;
+    }
+    .step-body { line-height: var(--leading-normal); }
+    .step-body p { margin: var(--space-1) 0 0; color: var(--color-text-secondary); font-size: var(--text-sm); }
+
+    .pattern-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: var(--space-4);
+    }
+    .pattern-card {
+      background: var(--color-surface);
+      border-radius: var(--radius-md);
+      padding: var(--space-6);
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal);
+    }
+    .pattern-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .pattern-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem; color: #fff; margin-bottom: var(--space-3);
+    }
+    .pattern-title { margin: 0 0 var(--space-2); font-family: var(--font-display); }
+    .pattern-desc { margin: 0; color: var(--color-text-secondary); line-height: var(--leading-normal); }
+
+    .quiz-container { display: flex; flex-direction: column; gap: var(--space-4); }
+    .quiz-question { margin: 0 0 var(--space-2); font-size: var(--text-lg); }
+    .quiz-options { display: flex; flex-direction: column; gap: var(--space-2); }
+    .quiz-option {
+      display: flex; align-items: center; gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      cursor: pointer;
+      transition: border-color var(--duration-fast), background var(--duration-fast);
+      width: 100%;
+    }
+    .quiz-option:hover { border-color: var(--color-accent-muted); }
+    .quiz-option.selected { border-color: var(--color-accent); background: var(--color-accent-light); }
+    .quiz-option.correct { border-color: var(--color-success); background: var(--color-success-light); }
+    .quiz-option.incorrect { border-color: var(--color-error); background: var(--color-error-light); }
+    .quiz-option-radio {
+      width: 18px; height: 18px; border-radius: 50%;
+      border: 2px solid var(--color-border);
+      transition: all var(--duration-fast);
+      flex-shrink: 0;
+    }
+    .quiz-option.selected .quiz-option-radio {
+      border-color: var(--color-accent);
+      background: var(--color-accent);
+      box-shadow: inset 0 0 0 3px white;
+    }
+    .quiz-feedback {
+      max-height: 0; overflow: hidden; opacity: 0;
+      transition: max-height var(--duration-normal), opacity var(--duration-normal);
+    }
+    .quiz-feedback.show { max-height: 200px; opacity: 1; padding: var(--space-3); margin-top: var(--space-2); border-radius: var(--radius-sm); }
+    .quiz-feedback.success { background: var(--color-success-light); color: var(--color-success); }
+    .quiz-feedback.error { background: var(--color-error-light); color: var(--color-error); }
+    .quiz-feedback.warning { background: var(--color-info-light); color: var(--color-info); }
+    .quiz-actions { display: flex; gap: var(--space-3); align-items: center; }
+    .quiz-button {
+      padding: var(--space-3) var(--space-5);
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      transition: transform var(--duration-fast);
+      background: var(--color-accent);
+      color: #fff;
+      box-shadow: var(--shadow-sm);
+    }
+    .quiz-button.secondary { background: var(--color-surface); color: var(--color-text); border: 1px solid var(--color-border); }
+    .quiz-button:hover { transform: translateY(-1px); }
+
+    .callout {
+      display: flex; gap: var(--space-3);
+      padding: var(--space-4);
+      border-radius: var(--radius-md);
+      border-left: 4px solid var(--color-accent);
+      background: var(--color-accent-light);
+      box-shadow: var(--shadow-sm);
+    }
+    .callout .callout-title { display: block; font-weight: 700; margin-bottom: var(--space-1); }
+    .callout .callout-icon { font-size: 1.4rem; }
+
+    .term {
+      border-bottom: 1.5px dashed var(--color-accent-muted);
+      cursor: pointer;
+      position: relative;
+    }
+    .term:hover, .term.active { border-bottom-color: var(--color-accent); color: var(--color-accent); }
+    .term-tooltip {
+      position: fixed;
+      background: var(--color-bg-code);
+      color: #CDD6F4;
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-sm);
+      font-size: var(--text-sm);
+      font-family: var(--font-body);
+      line-height: var(--leading-normal);
+      width: max(220px, min(340px, 80vw));
+      box-shadow: var(--shadow-lg);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity var(--duration-fast);
+      z-index: 10000;
+    }
+    .term-tooltip.visible { opacity: 1; }
+    .term-tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: var(--color-bg-code);
+    }
+    .term-tooltip.flip { bottom: auto; top: calc(100% + 8px); }
+    .term-tooltip.flip::after {
+      top: auto; bottom: 100%;
+      border-top-color: transparent; border-bottom-color: var(--color-bg-code);
+    }
+
+    .chat-window {
+      background: var(--color-surface-warm);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      padding: var(--space-4);
+      box-shadow: var(--shadow-sm);
+    }
+    .chat-messages { display: flex; flex-direction: column; gap: var(--space-3); min-height: 200px; }
+    .chat-message { display: none; gap: var(--space-3); align-items: flex-start; }
+    .chat-avatar {
+      width: 40px; height: 40px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 700; flex-shrink: 0;
+    }
+    .chat-bubble {
+      background: #fff;
+      border-radius: var(--radius-md);
+      padding: var(--space-3) var(--space-4);
+      box-shadow: var(--shadow-sm);
+      max-width: 520px;
+    }
+    .chat-sender { font-weight: 700; display: block; margin-bottom: var(--space-1); }
+    .chat-typing { display: none; align-items: center; gap: var(--space-3); }
+    .chat-typing-dots { display: flex; gap: 6px; }
+    .typing-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--color-text-muted);
+      animation: typingBounce 1.4s infinite;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes typingBounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
+
+    .chat-controls { display: flex; gap: var(--space-3); align-items: center; margin-top: var(--space-3); }
+    .chat-progress { color: var(--color-text-secondary); font-size: var(--text-sm); }
+
+    .flow-animation {
+      background: var(--color-surface-warm);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+    .flow-actors {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: var(--space-4);
+      margin-bottom: var(--space-4);
+    }
+    .flow-actor {
+      background: #fff;
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      border: 1px solid var(--color-border-light);
+      text-align: center;
+      transition: all var(--duration-normal) var(--ease-out);
+      box-shadow: var(--shadow-sm);
+    }
+    .flow-actor.active { box-shadow: 0 0 0 3px var(--color-accent), 0 0 20px rgba(217,79,48,0.2); transform: scale(1.03); }
+    .flow-actor-icon {
+      width: 42px; height: 42px; border-radius: 10px; margin: 0 auto var(--space-2);
+      display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700;
+    }
+    .flow-packet {
+      position: absolute;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--color-accent);
+      box-shadow: 0 0 0 8px rgba(217, 79, 48, 0.1);
+      opacity: 0;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      transition: opacity var(--duration-fast);
+    }
+    .flow-step-label { font-weight: 700; margin-bottom: var(--space-3); }
+    .flow-controls { display: flex; gap: var(--space-3); align-items: center; }
+    .flow-progress { color: var(--color-text-secondary); font-size: var(--text-sm); }
+
+    .file-tree { font-family: var(--font-mono); font-size: var(--text-sm); }
+    .ft-folder, .ft-file {
+      padding: var(--space-2) var(--space-3);
+      border-left: 2px solid var(--color-border-light);
+      margin-left: var(--space-4);
+    }
+    .ft-folder > .ft-name { color: var(--color-accent); font-weight: 600; }
+    .ft-folder > .ft-name::before { content: '📁 '; }
+    .ft-file > .ft-name::before { content: '📄 '; }
+    .ft-desc { color: var(--color-text-secondary); font-family: var(--font-body); margin-left: var(--space-2); font-size: var(--text-xs); }
+    .ft-children { margin-left: var(--space-4); }
+
+    .icon-rows { display: flex; flex-direction: column; gap: var(--space-4); }
+    .icon-row {
+      display: flex; gap: var(--space-4); align-items: center;
+      padding: var(--space-4);
+      background: var(--color-surface);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+    .icon-circle {
+      width: 48px; height: 48px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem; flex-shrink: 0;
+    }
+    .icon-row p { margin: 0; color: var(--color-text-secondary); font-size: var(--text-sm); }
+
+    @media (max-width: 900px) {
+      .module { padding: calc(var(--nav-height) + var(--space-8)) var(--space-4) var(--space-12); }
+      .translation-block { grid-template-columns: 1fr; }
+      .translation-english { border-left: none; border-top: 3px solid var(--color-accent); }
+      .nav-inner { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 480px) {
+      :root { --text-4xl: 1.5rem; --text-5xl: 1.875rem; --text-6xl: 2.25rem; }
+      .flow-actors { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+      .module { padding: calc(var(--nav-height) + var(--space-6)) var(--space-3) var(--space-10); }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="progress-bar" role="progressbar" aria-valuenow="0"></div>
+    <div class="nav-inner">
+      <span class="nav-title">Vue Manage System · 互动课程</span>
+      <div class="nav-dots" id="nav-dots"></div>
+    </div>
+  </nav>
+
+  <main>
+    <section class="module" id="module-1" style="background: var(--color-bg)">
+      <div class="module-content">
+        <header class="module-header animate-in">
+          <span class="module-number">01</span>
+          <h1 class="module-title">从登录到仪表盘：一次完整的前台体验</h1>
+          <p class="module-subtitle">跟着用户的视角，把「点登录」这件小事拆解成代码里的系列协作。</p>
+        </header>
+
+        <div class="module-body">
+          <section class="screen animate-in">
+            <h2 class="screen-heading">体验流程速览</h2>
+            <p class="lead">这套后台用 <span class="term" data-definition="Vue 3 是一套用于构建用户界面的渐进式框架。这里使用组合式 API 与单文件组件组合页面。">Vue 3</span> + <span class="term" data-definition="Element Plus 是 Vue 3 的组件库，提供表单、弹窗、布局等现成 UI。">Element Plus</span> 驱动 UI，<span class="term" data-definition="Pinia 是 Vue 官方推荐的状态管理库，用于在组件之间共享状态。">Pinia</span> 保存登录信息与权限。按下登录键，会经历表单校验 → 存储用户身份 → 注入权限 → 重定向到主页。</p>
+            <div class="step-cards">
+              <div class="step-card">
+                <div class="step-num">1</div>
+                <div class="step-body">
+                  <strong>校验输入</strong>
+                  <p>Element Plus 的表单规则先确保用户名、密码都不为空。</p>
+                </div>
+              </div>
+              <div class="step-card">
+                <div class="step-num">2</div>
+                <div class="step-body">
+                  <strong>记住登录人</strong>
+                  <p>账号存进 <span class="term" data-definition="localStorage 是浏览器内建的键值存储，页面刷新后依然存在。">localStorage</span>，同时将权限键列表塞给 Pinia。</p>
+                </div>
+              </div>
+              <div class="step-card">
+                <div class="step-num">3</div>
+                <div class="step-body">
+                  <strong>路由跳转</strong>
+                  <p>登录成功后 push 到首页，路由守卫会根据权限决定能否打开各个功能。</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen animate-in">
+            <h2 class="screen-heading">代码 ↔ Plain English：登录逻辑</h2>
+            <p class="lead">下面是登录页的真实函数，保持原样未改动。</p>
+            <div class="translation-block">
+              <div class="translation-code">
+                <span class="translation-label">CODE</span>
+                <pre><code>
+<span class="code-line"><span class="code-keyword">const</span> submitForm = <span class="code-keyword">(</span>formEl: FormInstance | undefined<span class="code-keyword">)</span> =&gt; {</span>
+<span class="code-line">    <span class="code-keyword">if</span> <span class="code-keyword">(</span>!formEl<span class="code-keyword">)</span> <span class="code-keyword">return</span>;</span>
+<span class="code-line">    formEl.validate(<span class="code-keyword">(</span>valid: <span class="code-keyword">boolean</span><span class="code-keyword">)</span> =&gt; {</span>
+<span class="code-line">        <span class="code-keyword">if</span> <span class="code-keyword">(</span>valid<span class="code-keyword">)</span> {</span>
+<span class="code-line">            ElMessage.success(<span class="code-string">'登录成功'</span>);</span>
+<span class="code-line">            localStorage.setItem(<span class="code-string">'vuems_name'</span>, param.username);</span>
+<span class="code-line">            <span class="code-keyword">const</span> keys = permiss.defaultList[param.username == <span class="code-string">'admin'</span> ? <span class="code-string">'admin'</span> : <span class="code-string">'user'</span>];</span>
+<span class="code-line">            permiss.handleSet(keys);</span>
+<span class="code-line">            router.push(<span class="code-string">'/'</span>);</span>
+<span class="code-line">            <span class="code-keyword">if</span> <span class="code-keyword">(</span>checked.value<span class="code-keyword">)</span> {</span>
+<span class="code-line">                localStorage.setItem(<span class="code-string">'login-param'</span>, JSON.stringify(param));</span>
+<span class="code-line">            } <span class="code-keyword">else</span> {</span>
+<span class="code-line">                localStorage.removeItem(<span class="code-string">'login-param'</span>);</span>
+<span class="code-line">            }</span>
+<span class="code-line">        } <span class="code-keyword">else</span> {</span>
+<span class="code-line">            ElMessage.error(<span class="code-string">'登录失败'</span>);</span>
+<span class="code-line">            <span class="code-keyword">return false</span>;</span>
+<span class="code-line">        }</span>
+<span class="code-line">    });</span>
+<span class="code-line">};</span>
+                </code></pre>
+              </div>
+              <div class="translation-english">
+                <span class="translation-label">PLAIN ENGLISH</span>
+                <div class="translation-lines">
+                  <p class="tl">别名 submitForm 接收表单实例，没有就直接返回。</p>
+                  <p class="tl">调用 Element Plus 的表单校验，拿到「valid」结果。</p>
+                  <p class="tl">成功时弹出提示，把用户名写进 localStorage 并刷新权限列表。</p>
+                  <p class="tl">根据 admin / user 选不同的权限键，存进 Pinia。</p>
+                  <p class="tl">跳转到首页；如果勾选「记住我」就存下登录表单。</p>
+                  <p class="tl">失败则弹出错误提示，整体结束。</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen animate-in" id="quiz-module-1">
+            <h2 class="screen-heading">小测：登录后谁在管权限？</h2>
+            <div class="quiz-container">
+              <div class="quiz-question-block" data-question="m1-q1" data-correct="option-b" data-explain-correct="Pinia 存的 key 决定能否通过路由元信息的 permiss 校验。" data-explain-wrong="本地存储只是身份标记，权限列表来自 Pinia。">
+                <h3 class="quiz-question">用户登录成功后，真正决定他能否进「用户管理」的依据是？</h3>
+                <div class="quiz-options">
+                  <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                    <div class="quiz-option-radio"></div>
+                    <span>localStorage 里保存的用户名</span>
+                  </button>
+                  <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                    <div class="quiz-option-radio"></div>
+                    <span>Pinia permiss store 里的 key 列表</span>
+                  </button>
+                  <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                    <div class="quiz-option-radio"></div>
+                    <span>Element Plus 表单校验通过与否</span>
+                  </button>
+                </div>
+                <div class="quiz-feedback" id="m1-q1-feedback"></div>
+              </div>
+              <div class="quiz-actions">
+                <button class="quiz-button" onclick="checkQuiz('module-1')">检查答案</button>
+                <button class="quiz-button secondary" onclick="resetQuiz('module-1')">再试一次</button>
+                <div class="quiz-overall-feedback" id="module-1-overall"></div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="module" id="module-2" style="background: var(--color-bg-warm)">
+      <div class="module-content">
+        <header class="module-header animate-in">
+          <span class="module-number">02</span>
+          <h1 class="module-title">路由守卫与角色：谁能看见什么</h1>
+          <p class="module-subtitle">Home 布局、路由表、403/404 页面共同编排访问控制。</p>
+        </header>
+
+        <div class="module-body">
+          <section class="screen animate-in">
+            <h2 class="screen-heading">路由守卫对话框</h2>
+            <p class="lead">用群聊的方式看懂 <span class="term" data-definition="路由守卫是在路由跳转前后执行的钩子，可以拦截或放行导航。">路由守卫</span>、<span class="term" data-definition="NProgress 是一个顶部进度条库，用来反馈加载状态。">NProgress</span> 与权限 store 的配合。</p>
+            <div class="chat-window">
+              <div class="chat-messages" id="chat-messages">
+                <div class="chat-message" data-msg="0" data-sender="guard" style="display:none">
+                  <div class="chat-avatar" style="background: var(--color-actor-1)">G</div>
+                  <div class="chat-bubble">
+                    <span class="chat-sender" style="color: var(--color-actor-1)">路由守卫</span>
+                    <p>收到导航请求，先启动顶栏进度条。</p>
+                  </div>
+                </div>
+                <div class="chat-message" data-msg="1" data-sender="storage" style="display:none">
+                  <div class="chat-avatar" style="background: var(--color-actor-2)">S</div>
+                  <div class="chat-bubble">
+                    <span class="chat-sender" style="color: var(--color-actor-2)">localStorage</span>
+                    <p>我这儿查到用户名为空，目标页又不是免登录，建议跳转 /login。</p>
+                  </div>
+                </div>
+                <div class="chat-message" data-msg="2" data-sender="permiss" style="display:none">
+                  <div class="chat-avatar" style="background: var(--color-actor-3)">P</div>
+                  <div class="chat-bubble">
+                    <span class="chat-sender" style="color: var(--color-actor-3)">权限 Store</span>
+                    <p>用户已登录？那就比对 meta.permiss，缺权限就去 403。</p>
+                  </div>
+                </div>
+                <div class="chat-message" data-msg="3" data-sender="router" style="display:none">
+                  <div class="chat-avatar" style="background: var(--color-actor-4)">R</div>
+                  <div class="chat-bubble">
+                    <span class="chat-sender" style="color: var(--color-actor-4)">Router</span>
+                    <p>校验通过，放行并在 afterEach 里结束进度条。</p>
+                  </div>
+                </div>
+              </div>
+              <div class="chat-typing" id="chat-typing" style="display:none">
+                <div class="chat-avatar" id="typing-avatar">?</div>
+                <div class="chat-typing-dots">
+                  <span class="typing-dot"></span>
+                  <span class="typing-dot"></span>
+                  <span class="typing-dot"></span>
+                </div>
+              </div>
+              <div class="chat-controls">
+                <button class="quiz-button" onclick="playChatNext()">下一条</button>
+                <button class="quiz-button secondary" onclick="playChatAll()">自动播放</button>
+                <button class="quiz-button secondary" onclick="resetChat()">重播</button>
+                <span class="chat-progress" id="chat-progress">0 / 4</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen animate-in">
+            <h2 class="screen-heading">代码 ↔ Plain English：beforeEach</h2>
+            <p class="lead">守卫本身只有十几行，逻辑直白但决定了整个访问链路。</p>
+            <div class="translation-block">
+              <div class="translation-code">
+                <span class="translation-label">CODE</span>
+                <pre><code>
+<span class="code-line">router.beforeEach(<span class="code-keyword">(</span>to, from, next<span class="code-keyword">)</span> =&gt; {</span>
+<span class="code-line">    NProgress.start();</span>
+<span class="code-line">    <span class="code-keyword">const</span> role = localStorage.getItem(<span class="code-string">'vuems_name'</span>);</span>
+<span class="code-line">    <span class="code-keyword">const</span> permiss = usePermissStore();</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">if</span> <span class="code-keyword">(</span>!role &amp;&amp; to.meta.noAuth !== <span class="code-keyword">true</span><span class="code-keyword">)</span> {</span>
+<span class="code-line">        next(<span class="code-string">'/login'</span>);</span>
+<span class="code-line">    } <span class="code-keyword">else</span> <span class="code-keyword">if</span> (<span class="code-keyword">typeof</span> to.meta.permiss == <span class="code-string">'string'</span> &amp;&amp; !permiss.key.includes(to.meta.permiss)) {</span>
+<span class="code-line">        <span class="code-comment">// 如果没有权限，则进入403</span></span>
+<span class="code-line">        next(<span class="code-string">'/403'</span>);</span>
+<span class="code-line">    } <span class="code-keyword">else</span> {</span>
+<span class="code-line">        next();</span>
+<span class="code-line">    }</span>
+<span class="code-line">});</span>
+                </code></pre>
+              </div>
+              <div class="translation-english">
+                <span class="translation-label">PLAIN ENGLISH</span>
+                <div class="translation-lines">
+                  <p class="tl">每次导航前先亮起顶部进度条。</p>
+                  <p class="tl">从 localStorage 取用户名，实例化权限 store。</p>
+                  <p class="tl">如果没登录且目标页不标记 noAuth，就强制去 /login。</p>
+                  <p class="tl">如果路由声明了 permiss 且当前 key 缺失，就拦到 403。</p>
+                  <p class="tl">其余情况直接放行，afterEach 会关闭进度条。</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen animate-in" id="quiz-module-2">
+            <h2 class="screen-heading">小测：守卫如何判定 403？</h2>
+            <div class="quiz-container">
+              <div class="quiz-question-block" data-question="m2-q1" data-correct="option-c" data-explain-correct="路由 meta.permiss 是字符串时才会校验，缺少就跳转 403。用户字段只有配合 permiss 才生效。" data-explain-wrong="用户名存在但不一定有权限；进度条只负责体验。">
+                <h3 class="quiz-question">什么情况下会跳到 /403 页面？</h3>
+                <div class="quiz-options">
+                  <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                    <div class="quiz-option-radio"></div>
+                    <span>用户名为空但目标路由标记了 noAuth</span>
+                  </button>
+                  <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                    <div class="quiz-option-radio"></div>
+                    <span>NProgress 还没加载完</span>
+                  </button>
+                  <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                    <div class="quiz-option-radio"></div>
+                    <span>路由声明了 meta.permiss 且当前 key 列表不包含它</span>
+                  </button>
+                </div>
+                <div class="quiz-feedback" id="m2-q1-feedback"></div>
+              </div>
+              <div class="quiz-actions">
+                <button class="quiz-button" onclick="checkQuiz('module-2')">检查答案</button>
+                <button class="quiz-button secondary" onclick="resetQuiz('module-2')">再试一次</button>
+                <div class="quiz-overall-feedback" id="module-2-overall"></div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="module" id="module-3" style="background: var(--color-bg)">
+      <div class="module-content">
+        <header class="module-header animate-in">
+          <span class="module-number">03</span>
+          <h1 class="module-title">布局、标签页与主题色</h1>
+          <p class="module-subtitle">Home 布局包裹 header / sidebar / tabs，用 Pinia 让主题与标签同步。</p>
+        </header>
+
+        <div class="module-body">
+          <section class="screen animate-in">
+            <h2 class="screen-heading">界面骨架</h2>
+            <p class="lead">首页实际上是一个外壳：头部、侧边栏、内容区域，再配合 <span class="term" data-definition="keep-alive 是 Vue 内置组件，用来缓存动态组件状态，避免重复渲染。">keep-alive</span> 记住已打开的标签。</p>
+            <div class="file-tree">
+              <div class="ft-folder open">
+                <span class="ft-name">src/</span><span class="ft-desc">Vue 3 + Vite 主目录</span>
+                <div class="ft-children">
+                  <div class="ft-file"><span class="ft-name">views/home.vue</span><span class="ft-desc">包裹所有业务页面的布局壳</span></div>
+                  <div class="ft-folder"><span class="ft-name">components/</span><span class="ft-desc">header / sidebar / tabs 等 UI</span></div>
+                  <div class="ft-folder"><span class="ft-name">store/</span><span class="ft-desc">Pinia 状态：主题、标签、权限</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="pattern-cards">
+              <div class="pattern-card" style="border-top:3px solid var(--color-actor-1)">
+                <div class="pattern-icon" style="background:var(--color-actor-1)">🧭</div>
+                <h4 class="pattern-title">布局分区</h4>
+                <p class="pattern-desc">header 负责操作区、sidebar 控制导航，content 用 keep-alive 缓存页面。</p>
+              </div>
+              <div class="pattern-card" style="border-top:3px solid var(--color-actor-2)">
+                <div class="pattern-icon" style="background:var(--color-actor-2)">🎨</div>
+                <h4 class="pattern-title">主题动态化</h4>
+                <p class="pattern-desc">theme store 把用户选的色值写进 CSS 变量，实时驱动 Element Plus 主题。</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen animate-in">
+            <h2 class="screen-heading">代码 ↔ Plain English：主题色计算</h2>
+            <p class="lead">theme store 的核心是把用户选的主色扩展出浅色、深色梯度。</p>
+            <div class="translation-block">
+              <div class="translation-code">
+                <span class="translation-label">CODE</span>
+                <pre><code>
+<span class="code-line">setPropertyColor(color: <span class="code-keyword">string</span>, type: <span class="code-keyword">string</span> = <span class="code-string">'primary'</span>) {</span>
+<span class="code-line">    <span class="code-keyword">this</span>[type] = color;</span>
+<span class="code-line">    setProperty(<span class="code-string">`--el-color-${type}`</span>, color);</span>
+<span class="code-line">    localStorage.setItem(<span class="code-string">`theme-${type}`</span>, color);</span>
+<span class="code-line">    <span class="code-keyword">this</span>.setThemeLight(type);</span>
+<span class="code-line">},</span>
+<span class="code-line">setThemeLight(type: <span class="code-keyword">string</span> = <span class="code-string">'primary'</span>) {</span>
+<span class="code-line">    [3, 5, 7, 8, 9].forEach(<span class="code-keyword">(</span>v<span class="code-keyword">)</span> =&gt; {</span>
+<span class="code-line">        setProperty(<span class="code-string">`--el-color-${type}-light-${v}`</span>, mix(<span class="code-string">'#ffffff'</span>, <span class="code-keyword">this</span>[type], v / 10));</span>
+<span class="code-line">    });</span>
+<span class="code-line">    setProperty(<span class="code-string">`--el-color-${type}-dark-2`</span>, mix(<span class="code-string">'#ffffff'</span>, <span class="code-keyword">this</span>[type], 0.2));</span>
+<span class="code-line">},</span>
+                </code></pre>
+              </div>
+              <div class="translation-english">
+                <span class="translation-label">PLAIN ENGLISH</span>
+                <div class="translation-lines">
+                  <p class="tl">把用户选的颜色保存到当前 store 字段。</p>
+                  <p class="tl">同时写入 CSS 变量 --el-color-*，Element Plus 立刻读到新色。</p>
+                  <p class="tl">存入 localStorage，下次刷新还能记得偏好。</p>
+                  <p class="tl">setThemeLight 循环生成浅色梯度，供组件 hover、弱态使用。</p>
+                  <p class="tl">再生成一个深色版本用于按钮激活状态。</p>
+                </div>
+              </div>
+            </div>
+            <div class="callout">
+              <div class="callout-icon">💡</div>
+              <div class="callout-content">
+                <strong class="callout-title">为什么用 CSS 变量？</strong>
+                <p>CSS 变量改一次即可让整套 Element Plus 跟着变化，比逐个组件传 props 更稳定，也方便 AI 生成的代码复用这些令牌。</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen animate-in" id="quiz-module-3">
+            <h2 class="screen-heading">小测：主题切换在哪儿生效？</h2>
+            <div class="quiz-container">
+              <div class="quiz-question-block" data-question="m3-q1" data-correct="option-b" data-explain-correct="setPropertyColor 写入 --el-color-primary 相关变量，Element Plus 组件依赖这些变量。Pinia 只是存值，不负责渲染。" data-explain-wrong="localStorage 只是持久化；组件本身不会读取 store 对象。">
+                <h3 class="quiz-question">用户在主题页换了主色，真正让按钮颜色变化的动作是？</h3>
+                <div class="quiz-options">
+                  <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                    <div class="quiz-option-radio"></div>
+                    <span>Pinia 保存了新的颜色字符串</span>
+                  </button>
+                  <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                    <div class="quiz-option-radio"></div>
+                    <span>setProperty 把色值写进 --el-color-* CSS 变量</span>
+                  </button>
+                  <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                    <div class="quiz-option-radio"></div>
+                    <span>localStorage 触发了页面重绘</span>
+                  </button>
+                </div>
+                <div class="quiz-feedback" id="m3-q1-feedback"></div>
+              </div>
+              <div class="quiz-actions">
+                <button class="quiz-button" onclick="checkQuiz('module-3')">检查答案</button>
+                <button class="quiz-button secondary" onclick="resetQuiz('module-3')">再试一次</button>
+                <div class="quiz-overall-feedback" id="module-3-overall"></div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="module" id="module-4" style="background: var(--color-bg-warm)">
+      <div class="module-content">
+        <header class="module-header animate-in">
+          <span class="module-number">04</span>
+          <h1 class="module-title">表格数据管线：请求、分页、编辑</h1>
+          <p class="module-subtitle">基础表格页演示了从 mock 数据到分页刷新的一整条流水线。</p>
+        </header>
+
+        <div class="module-body">
+          <section class="screen animate-in">
+            <h2 class="screen-heading">数据流动画：从按钮到表格</h2>
+            <p class="lead">点击分页或新增后，数据会在 Table 组件、API 模块、axios 拦截器、mock 文件之间往返。</p>
+            <div class="flow-animation">
+              <div class="flow-actors">
+                <div class="flow-actor" id="flow-actor-view">
+                  <div class="flow-actor-icon" style="background:var(--color-actor-1)">🖥️</div>
+                  <strong>表格视图</strong>
+                  <p class="lead">负责展示与触发交互</p>
+                </div>
+                <div class="flow-actor" id="flow-actor-api">
+                  <div class="flow-actor-icon" style="background:var(--color-actor-2)">🔌</div>
+                  <strong>API 模块</strong>
+                  <p class="lead">fetchData 组装请求</p>
+                </div>
+                <div class="flow-actor" id="flow-actor-axios">
+                  <div class="flow-actor-icon" style="background:var(--color-actor-3)">📡</div>
+                  <strong>axios 拦截器</strong>
+                  <p class="lead">统一超时与状态码</p>
+                </div>
+                <div class="flow-actor" id="flow-actor-mock">
+                  <div class="flow-actor-icon" style="background:var(--color-actor-4)">📁</div>
+                  <strong>mock JSON</strong>
+                  <p class="lead">返回表格列表</p>
+                </div>
+              </div>
+              <div class="flow-packet" id="flow-packet"></div>
+              <div class="flow-step-label" id="flow-label">点击「下一步」查看数据如何流动</div>
+              <div class="flow-controls">
+                <button class="quiz-button" onclick="flowNext()">下一步</button>
+                <button class="quiz-button secondary" onclick="flowReset()">重置</button>
+                <span class="flow-progress" id="flow-progress">Step 0 / 4</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen animate-in">
+            <h2 class="screen-heading">代码 ↔ Plain English：获取与分页</h2>
+            <p class="lead">表格页的取数与分页是两段简短的组合。</p>
+            <div class="translation-block">
+              <div class="translation-code">
+                <span class="translation-label">CODE</span>
+                <pre><code>
+<span class="code-line"><span class="code-keyword">const</span> getData = <span class="code-keyword">async</span> () =&gt; {</span>
+<span class="code-line">    <span class="code-keyword">const</span> res = <span class="code-keyword">await</span> fetchData()</span>
+<span class="code-line">    tableData.value = res.data.list;</span>
+<span class="code-line">};</span>
+<span class="code-line">getData();</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-keyword">const</span> changePage = <span class="code-keyword">(</span>val: <span class="code-keyword">number</span><span class="code-keyword">)</span> =&gt; {</span>
+<span class="code-line">    page.index = val;</span>
+<span class="code-line">    getData();</span>
+<span class="code-line">};</span>
+                </code></pre>
+              </div>
+              <div class="translation-english">
+                <span class="translation-label">PLAIN ENGLISH</span>
+                <div class="translation-lines">
+                  <p class="tl">getData 调用 fetchData（axios 封装）拿到 mock 数据。</p>
+                  <p class="tl">把返回的 list 写进响应式 tableData，UI 自动刷新。</p>
+                  <p class="tl">组件挂载时立刻执行一次，得到初始表格。</p>
+                  <p class="tl">changePage 更新当前页码后复用同一个取数函数。</p>
+                  <p class="tl">这里分页数据仍用本地 mock，接入后端时只需改 fetchData。</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen animate-in" id="quiz-module-4">
+            <h2 class="screen-heading">小测：刷新数据的最佳位置</h2>
+            <div class="quiz-container">
+              <div class="quiz-question-block" data-question="m4-q1" data-correct="option-b" data-explain-correct="分页切换后只需更新页码并复用 getData，不需要手写新的请求或强制刷新组件。"> 
+                <h3 class="quiz-question">用户切换到第 3 页，最合理的做法是？</h3>
+                <div class="quiz-options">
+                  <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                    <div class="quiz-option-radio"></div>
+                    <span>销毁组件再重建，触发 onMounted</span>
+                  </button>
+                  <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                    <div class="quiz-option-radio"></div>
+                    <span>更新 page.index 后直接调用 getData()</span>
+                  </button>
+                  <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                    <div class="quiz-option-radio"></div>
+                    <span>只改表格当前页，不重新请求</span>
+                  </button>
+                </div>
+                <div class="quiz-feedback" id="m4-q1-feedback"></div>
+              </div>
+              <div class="quiz-actions">
+                <button class="quiz-button" onclick="checkQuiz('module-4')">检查答案</button>
+                <button class="quiz-button secondary" onclick="resetQuiz('module-4')">再试一次</button>
+                <div class="quiz-overall-feedback" id="module-4-overall"></div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="module" id="module-5" style="background: var(--color-bg)">
+      <div class="module-content">
+        <header class="module-header animate-in">
+          <span class="module-number">05</span>
+          <h1 class="module-title">可视化与扩展组件</h1>
+          <p class="module-subtitle">仪表盘、富文本、主题配置等功能展示了如何组合第三方生态。</p>
+        </header>
+
+        <div class="module-body">
+          <section class="screen animate-in">
+            <h2 class="screen-heading">图表初始化</h2>
+            <p class="lead">仪表盘使用 <span class="term" data-definition="ECharts 是一款基于 JavaScript 的开源可视化库，支持丰富的图表。">ECharts</span> + <span class="term" data-definition="vue-echarts 是 ECharts 的 Vue 包装组件，允许用组件方式传入 option。">vue-echarts</span> 渲染折线、饼图与地图。</p>
+            <div class="translation-block">
+              <div class="translation-code">
+                <span class="translation-label">CODE</span>
+                <pre><code>
+<span class="code-line">use([</span>
+<span class="code-line">    CanvasRenderer,</span>
+<span class="code-line">    BarChart,</span>
+<span class="code-line">    GridComponent,</span>
+<span class="code-line">    LineChart,</span>
+<span class="code-line">    PieChart,</span>
+<span class="code-line">    TooltipComponent,</span>
+<span class="code-line">    LegendComponent,</span>
+<span class="code-line">    TitleComponent,</span>
+<span class="code-line">    VisualMapComponent,</span>
+<span class="code-line">    MapChart,</span>
+<span class="code-line">]);</span>
+<span class="code-line">registerMap(<span class="code-string">'china'</span>, chinaMap);</span>
+                </code></pre>
+              </div>
+              <div class="translation-english">
+                <span class="translation-label">PLAIN ENGLISH</span>
+                <div class="translation-lines">
+                  <p class="tl">按需注册图表类型和组件，减小打包体积。</p>
+                  <p class="tl">把中国地图数据注册给 ECharts，这样地图图层才能渲染。</p>
+                  <p class="tl">Vue 组件只需要传入 option，其他初始化在这里一次搞定。</p>
+                </div>
+              </div>
+            </div>
+            <div class="icon-rows">
+              <div class="icon-row">
+                <div class="icon-circle" style="background:var(--color-actor-1)">📊</div>
+                <div>
+                  <strong>仪表盘折线 & 饼图</strong>
+                  <p>订单动态与品类分布用同一套注册组件即可渲染。</p>
+                </div>
+              </div>
+              <div class="icon-row">
+                <div class="icon-circle" style="background:var(--color-actor-2)">🗺️</div>
+                <div>
+                  <strong>地图热力</strong>
+                  <p>registerMap 绑定地理数据，再通过 option 配置热力颜色。</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen animate-in" id="quiz-module-5">
+            <h2 class="screen-heading">小测：扩展一个新图表</h2>
+            <div class="quiz-container">
+              <div class="quiz-question-block" data-question="m5-q1" data-correct="option-a" data-explain-correct="按需 use 注册新的图表类型即可在 vue-echarts 中使用，不需要改 axios 或主题。">
+                <h3 class="quiz-question">想增加一个雷达图模块，第一步最该做什么？</h3>
+                <div class="quiz-options">
+                  <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                    <div class="quiz-option-radio"></div>
+                    <span>在 use([...]) 中注册 RadarChart 相关组件</span>
+                  </button>
+                  <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                    <div class="quiz-option-radio"></div>
+                    <span>修改 axios 拦截器</span>
+                  </button>
+                  <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                    <div class="quiz-option-radio"></div>
+                    <span>更换主题色变量</span>
+                  </button>
+                </div>
+                <div class="quiz-feedback" id="m5-q1-feedback"></div>
+              </div>
+              <div class="quiz-actions">
+                <button class="quiz-button" onclick="checkQuiz('module-5')">检查答案</button>
+                <button class="quiz-button secondary" onclick="resetQuiz('module-5')">再试一次</button>
+                <div class="quiz-overall-feedback" id="module-5-overall"></div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Nav dots & progress
+    const modules = [
+      { id: 'module-1', name: '登录体验' },
+      { id: 'module-2', name: '路由权限' },
+      { id: 'module-3', name: '主题与布局' },
+      { id: 'module-4', name: '表格数据' },
+      { id: 'module-5', name: '可视化' },
+    ];
+    const navDots = document.getElementById('nav-dots');
+    const progressBar = document.querySelector('.progress-bar');
+    modules.forEach((m, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'nav-dot';
+      btn.setAttribute('aria-label', m.name);
+      btn.dataset.target = m.id;
+      btn.title = m.name;
+      btn.addEventListener('click', () => document.getElementById(m.id).scrollIntoView({ behavior: 'smooth' }));
+      navDots.appendChild(btn);
+    });
+    function updateProgress() {
+      const scrollTop = window.scrollY;
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = (scrollTop / scrollHeight) * 100;
+      progressBar.style.width = progress + '%';
+    }
+    function updateDots() {
+      const sections = modules.map(m => document.getElementById(m.id));
+      const mid = window.scrollY + window.innerHeight / 2;
+      sections.forEach((sec, i) => {
+        const dot = navDots.children[i];
+        const top = sec.offsetTop, bottom = top + sec.offsetHeight;
+        if (mid >= top && mid < bottom) {
+          dot.classList.add('current');
+          dot.classList.add('visited');
+        } else {
+          dot.classList.remove('current');
+          if (window.scrollY > top - 10) dot.classList.add('visited');
+        }
+      });
+    }
+    window.addEventListener('scroll', () => {
+      requestAnimationFrame(() => { updateProgress(); updateDots(); });
+    }, { passive: true });
+    updateProgress(); updateDots();
+
+    // Reveal animations
+    document.querySelectorAll('.stagger-children').forEach(parent => {
+      Array.from(parent.children).forEach((child, i) => child.style.setProperty('--stagger-index', i));
+    });
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.1 });
+    document.querySelectorAll('.animate-in').forEach(el => observer.observe(el));
+
+    // Tooltip logic
+    let activeTooltip = null;
+    function positionTooltip(term, tip) {
+      const rect = term.getBoundingClientRect();
+      const tipWidth = tip.offsetWidth || 300;
+      let left = rect.left + rect.width / 2 - tipWidth / 2;
+      left = Math.max(8, Math.min(left, window.innerWidth - tipWidth - 8));
+      document.body.appendChild(tip);
+      const tipHeight = tip.offsetHeight;
+      if (rect.top - tipHeight - 8 < 0) {
+        tip.style.top = (rect.bottom + 8) + 'px';
+        tip.classList.add('flip');
+      } else {
+        tip.style.top = (rect.top - tipHeight - 8) + 'px';
+        tip.classList.remove('flip');
+      }
+      tip.style.left = left + 'px';
+    }
+    document.querySelectorAll('.term').forEach(term => {
+      const tip = document.createElement('span');
+      tip.className = 'term-tooltip';
+      tip.textContent = term.dataset.definition;
+      term.addEventListener('mouseenter', () => {
+        if (activeTooltip && activeTooltip !== tip) { activeTooltip.classList.remove('visible'); activeTooltip.remove(); }
+        positionTooltip(term, tip);
+        requestAnimationFrame(() => tip.classList.add('visible'));
+        activeTooltip = tip;
+      });
+      term.addEventListener('mouseleave', () => {
+        tip.classList.remove('visible');
+        setTimeout(() => { if (!tip.classList.contains('visible')) tip.remove(); }, 150);
+        activeTooltip = null;
+      });
+      term.addEventListener('click', e => {
+        e.stopPropagation();
+        if (activeTooltip && activeTooltip !== tip) { activeTooltip.classList.remove('visible'); activeTooltip.remove(); }
+        if (tip.classList.contains('visible')) {
+          tip.classList.remove('visible'); tip.remove(); activeTooltip = null;
+        } else {
+          positionTooltip(term, tip);
+          requestAnimationFrame(() => tip.classList.add('visible'));
+          activeTooltip = tip;
+        }
+      });
+    });
+    document.addEventListener('click', () => {
+      if (activeTooltip) { activeTooltip.classList.remove('visible'); activeTooltip.remove(); activeTooltip = null; }
+    });
+
+    // Quiz logic
+    window.selectOption = function(btn) {
+      const block = btn.closest('.quiz-question-block');
+      block.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+      btn.classList.add('selected');
+    };
+    function findExplanation(block, correct) {
+      return correct ? (block.dataset.explainCorrect || '') : (block.dataset.explainWrong || '再看看代码细节。');
+    }
+    window.checkQuiz = function(sectionId) {
+      const container = document.querySelector(`#${sectionId} .quiz-container`);
+      if (!container) return;
+      const questions = container.querySelectorAll('.quiz-question-block');
+      let correctCount = 0;
+      questions.forEach(q => {
+        const selected = q.querySelector('.quiz-option.selected');
+        const feedback = q.querySelector('.quiz-feedback');
+        const correctValue = q.dataset.correct;
+        if (!selected) {
+          feedback.textContent = '先选一个答案吧～';
+          feedback.className = 'quiz-feedback show warning';
+          return;
+        }
+        const isCorrect = selected.dataset.value === correctValue;
+        if (isCorrect) {
+          correctCount++;
+          selected.classList.add('correct');
+          feedback.innerHTML = '<strong>正确！</strong> ' + findExplanation(q, true);
+          feedback.className = 'quiz-feedback show success';
+        } else {
+          selected.classList.add('incorrect');
+          q.querySelector(`[data-value="${correctValue}"]`).classList.add('correct');
+          feedback.innerHTML = '<strong>不完全对。</strong> ' + findExplanation(q, false);
+          feedback.className = 'quiz-feedback show error';
+        }
+        q.querySelectorAll('.quiz-option').forEach(o => o.disabled = true);
+      });
+      const overall = container.querySelector('.quiz-overall-feedback');
+      if (overall) {
+        overall.textContent = `答对 ${correctCount} / ${questions.length}`;
+      }
+    };
+    window.resetQuiz = function(sectionId) {
+      const container = document.querySelector(`#${sectionId} .quiz-container`);
+      if (!container) return;
+      container.querySelectorAll('.quiz-option').forEach(o => { o.classList.remove('selected', 'correct', 'incorrect'); o.disabled = false; });
+      container.querySelectorAll('.quiz-feedback').forEach(f => { f.className = 'quiz-feedback'; f.textContent = ''; });
+      const overall = container.querySelector('.quiz-overall-feedback');
+      if (overall) overall.textContent = '';
+    };
+
+    // Chat animation
+    let chatIndex = 0;
+    const chatMessages = document.querySelectorAll('#chat-messages .chat-message');
+    const typing = document.getElementById('chat-typing');
+    const typingAvatar = document.getElementById('typing-avatar');
+    const chatActors = {
+      'guard': { initials: 'G', color: 'var(--color-actor-1)' },
+      'storage': { initials: 'S', color: 'var(--color-actor-2)' },
+      'permiss': { initials: 'P', color: 'var(--color-actor-3)' },
+      'router': { initials: 'R', color: 'var(--color-actor-4)' },
+    };
+    function updateChatProgress() {
+      const label = document.getElementById('chat-progress');
+      label.textContent = `${Math.min(chatIndex, chatMessages.length)} / ${chatMessages.length}`;
+    }
+    window.playChatNext = function() {
+      if (chatIndex >= chatMessages.length) return;
+      const msg = chatMessages[chatIndex];
+      const sender = msg.dataset.sender;
+      typingAvatar.textContent = chatActors[sender].initials;
+      typingAvatar.style.background = chatActors[sender].color;
+      typing.style.display = 'flex';
+      setTimeout(() => {
+        typing.style.display = 'none';
+        msg.style.display = 'flex';
+        msg.style.animation = 'fadeSlideUp 0.3s var(--ease-out)';
+        chatIndex++;
+        updateChatProgress();
+      }, 800);
+    };
+    window.playChatAll = function() {
+      const interval = setInterval(() => {
+        if (chatIndex >= chatMessages.length) { clearInterval(interval); return; }
+        playChatNext();
+      }, 1200);
+    };
+    window.resetChat = function() {
+      chatIndex = 0;
+      chatMessages.forEach(m => m.style.display = 'none');
+      typing.style.display = 'none';
+      updateChatProgress();
+    };
+    updateChatProgress();
+
+    // Flow animation
+    const flowSteps = [
+      { from: 'view', to: 'api', label: '表格组件触发 getData / changePage 调用', highlight: 'view', packet: true },
+      { from: 'api', to: 'axios', label: 'API 模块封装 fetchData 请求', highlight: 'api', packet: true },
+      { from: 'axios', to: 'mock', label: 'axios 拦截器发起请求并校验响应状态', highlight: 'axios', packet: true },
+      { from: 'mock', to: 'view', label: 'mock JSON 返回列表，UI 根据 tableData 更新', highlight: 'mock', packet: true },
+    ];
+    let flowStep = 0;
+    const flowPacket = document.getElementById('flow-packet');
+    function actorCenter(id) {
+      const el = document.getElementById(`flow-actor-${id}`);
+      const rect = el.getBoundingClientRect();
+      return { x: rect.left + rect.width / 2 + window.scrollX, y: rect.top + rect.height / 2 + window.scrollY };
+    }
+    function animatePacket(from, to) {
+      const start = actorCenter(from);
+      const end = actorCenter(to);
+      flowPacket.style.left = start.x + 'px';
+      flowPacket.style.top = start.y + 'px';
+      flowPacket.style.opacity = 1;
+      requestAnimationFrame(() => {
+        flowPacket.style.transition = 'transform 0.6s var(--ease-out), opacity var(--duration-normal)';
+        flowPacket.style.transform = `translate(${end.x - start.x}px, ${end.y - start.y}px)`;
+        setTimeout(() => flowPacket.style.opacity = 0, 650);
+      });
+    }
+    window.flowNext = function() {
+      if (flowStep >= flowSteps.length) return;
+      const step = flowSteps[flowStep];
+      document.querySelectorAll('.flow-actor').forEach(a => a.classList.remove('active'));
+      document.getElementById(`flow-actor-${step.highlight}`).classList.add('active');
+      document.getElementById('flow-label').textContent = step.label;
+      document.getElementById('flow-progress').textContent = `Step ${flowStep + 1} / ${flowSteps.length}`;
+      if (step.packet) animatePacket(step.from, step.to);
+      flowStep++;
+    };
+    window.flowReset = function() {
+      flowStep = 0;
+      document.querySelectorAll('.flow-actor').forEach(a => a.classList.remove('active'));
+      flowPacket.style.opacity = 0;
+      document.getElementById('flow-label').textContent = '点击「下一步」查看数据如何流动';
+      document.getElementById('flow-progress').textContent = `Step 0 / ${flowSteps.length}`;
+    };
+    window.addEventListener('resize', () => { flowPacket.style.opacity = 0; });
+  </script>
+</body>
+</html>
