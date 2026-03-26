@@ -28,6 +28,10 @@ Please check the version of vue2 in [tag V4.2.0](https://github.com/lin-xin/vue-
 
 The scheme as a set of multi-function background frame templates, suitable for most of the WEB management system development. Convenient development fast simple good components based on Vue3 and ElementPlus. Color separation of color style, support manual switch themes, and it is convenient to use a custom theme color.
 
+## Interactive course
+
+- A self-contained learning page `course.html` lives in the repository root. Open it directly in your browser to read the interactive walkthrough (code ↔ English explanations, animations, and quizzes) offline.
+
 ## Function
 
 -   [x] Element-UI
